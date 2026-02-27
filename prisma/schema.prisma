@@ -1,0 +1,104 @@
+// Prisma schema for CryptoBazaar P2P exchange
+// Save this as schema.prisma in the /prisma directory
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  clerkId           String   @unique
+  email             String   @unique
+  firstName         String
+  lastName          String
+  phone             String
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String
+  zipCode           String
+  dateOfBirth       DateTime
+  gender            String?
+  bankName          String
+  accountNumber     String
+  ifsc              String
+  walletAddress     String?  @unique
+  termsAccepted     Boolean  @default(false)
+  privacyAccepted   Boolean  @default(false)
+  marketingAccepted Boolean  @default(false)
+  onboardingComplete Boolean @default(false)
+  kycVerified       Boolean  @default(false)
+  trustScore        Int      @default(0)
+  totalTrades       Int      @default(0)
+  completionRate    Float    @default(0)
+  razorpay          Razorpay?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Razorpay {
+  id            Int      @id @default(autoincrement())
+  contactId     String
+  fundAccountId String
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model P2POrder {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  cryptocurrency    String
+  fiatCurrency      String   @default("INR")
+  price             Decimal  @db.Decimal(10, 2)
+  totalAmount       Decimal  @db.Decimal(15, 2)
+  minLimit          Decimal  @db.Decimal(10, 2)
+  maxLimit          Decimal  @db.Decimal(15, 2)
+  availableAmount   Decimal  @db.Decimal(15, 2)
+  paymentMethods    String[]
+  timeLimit         Int
+  status            String   @default("ACTIVE")
+  completionRate    Decimal  @db.Decimal(5, 2) @default(0.00)
+  totalOrders       Int      @default(0)
+  verified          Boolean  @default(false)
+  rating            Decimal  @db.Decimal(3, 2) @default(0.00)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([cryptocurrency, type, status])
+  @@index([price])
+}
+
+model Transaction {
+  id             String   @id @default(cuid())
+  userId         String
+  type           String
+  cryptocurrency String
+  amount         Float
+  fiatAmount     Float
+  txHash         String?
+  razorpayId     String?
+  status         String   @default("SUCCESS")
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  reviewerId  String
+  revieweeId  String
+  rating      Int
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  @@index([revieweeId])
+}

@@ -1,0 +1,43 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-94929da0a6913a9b67254e1428d56557edb23fb8",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/Certificate.sol": "project/contracts/Certificate.sol",
+    "contracts/Lock.sol": "project/contracts/Lock.sol",
+    "contracts/Payment.sol": "project/contracts/Payment.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/Certificate.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.28;\n\ncontract Certificate {\n    // Define a certificate structure\n    struct Cert {\n        address issuer;\n        address recipient;\n        string ipfsHash; // Hash of the document stored on IPFS\n        uint256 issuedAt;\n    }\n    \n    // Certificate counter (auto-incremented ID)\n    uint256 public certCount;\n    \n    // Mapping from certificate ID to the certificate details\n    mapping(uint256 => Cert) public certificates;\n    \n    // Event emitted when a new certificate is issued\n    event CertificateIssued(\n        uint256 indexed certId,\n        address indexed issuer,\n        address indexed recipient,\n        string ipfsHash,\n        uint256 issuedAt\n    );\n    \n    /**\n     * @dev Issues a certificate by storing the IPFS hash on-chain.\n     * @param recipient The address of the certificate recipient.\n     * @param ipfsHash The IPFS hash of the document (e.g., image, PDF, text).\n     * @return The certificate ID.\n     */\n    function issueCertificate(address recipient, string calldata ipfsHash) external returns (uint256) {\n        require(recipient != address(0), \"Invalid recipient address\");\n        require(bytes(ipfsHash).length > 0, \"IPFS hash required\");\n        \n        certCount++;\n        \n        certificates[certCount] = Cert({\n            issuer: msg.sender,\n            recipient: recipient,\n            ipfsHash: ipfsHash,\n            issuedAt: block.timestamp\n        });\n        \n        emit CertificateIssued(certCount, msg.sender, recipient, ipfsHash, block.timestamp);\n        return certCount;\n    }\n}\n"
+      },
+      "project/contracts/Lock.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.28;\n\n// Uncomment this line to use console.log\n// import \"hardhat/console.sol\";\n\ncontract Lock {\n    uint public unlockTime;\n    address payable public owner;\n\n    event Withdrawal(uint amount, uint when);\n\n    constructor(uint _unlockTime) payable {\n        require(\n            block.timestamp < _unlockTime,\n            \"Unlock time should be in the future\"\n        );\n\n        unlockTime = _unlockTime;\n        owner = payable(msg.sender);\n    }\n\n    function withdraw() public {\n        // Uncomment this line, and the import of \"hardhat/console.sol\", to print a log in your terminal\n        // console.log(\"Unlock time is %o and block timestamp is %o\", unlockTime, block.timestamp);\n\n        require(block.timestamp >= unlockTime, \"You can't withdraw yet\");\n        require(msg.sender == owner, \"You aren't the owner\");\n\n        emit Withdrawal(address(this).balance, block.timestamp);\n\n        owner.transfer(address(this).balance);\n    }\n}\n"
+      },
+      "project/contracts/Payment.sol": {
+        "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Payment {\n    event PaymentSent(address indexed sender, address indexed receiver, uint256 amount);\n\n    // Function to send Ether\n    function sendPayment(address payable receiver) external payable {\n        require(msg.value > 0, \"Amount must be greater than zero\");\n        require(receiver != address(0), \"Invalid receiver address\");\n\n    (bool sent, ) = receiver.call{value: msg.value}(\"\");\n    require(sent, \"Failed to send MON\");\n    emit PaymentSent(msg.sender, receiver, msg.value);\n    }\n}\n"
+      }
+    }
+  }
+}
