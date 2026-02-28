@@ -1,6 +1,7 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
-const Sheet = ({ children }: { children: React.ReactNode }) => <>{children}</>
+import { cn } from "@/app/lib/utils"
+
+const Sheet = ({ children, open, onOpenChange, ...props }: any) => <>{children}</>
 const SheetTrigger = ({ children, asChild, ...props }: any) => <div {...props}>{children}</div>
 const SheetContent = ({ children, className, side = "right", ...props }: any) => (
   <div className={cn("fixed inset-y-0 right-0 z-50 w-72 bg-background p-6 shadow-lg", className)} {...props}>{children}</div>

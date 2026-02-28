@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "./components/Navbar";
-import { Footer } from "./components/footer";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "RupeeLink - Secure P2P Crypto Trading",
@@ -28,13 +16,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col">
           <Navbar />
-          {/* Add top padding to main so content starts below navbar (navbar height + margin) */}
           <main className="flex-1 flex flex-col">
             {children}
           </main>
-          {/* <Footer /> */}
         </body>
       </html>
     </ClerkProvider>

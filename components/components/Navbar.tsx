@@ -4,7 +4,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { motion, AnimatePresence } from "framer-motion";
 import { DollarSign, Bell, LayoutDashboard, Wallet } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useNotifications } from "../hooks/useNotifications";
+import { useNotifications } from "@/app/hooks/useNotifications";
 
 export default function Navbar() {
   const { notifications, unreadCount, markAllRead } = useNotifications();
