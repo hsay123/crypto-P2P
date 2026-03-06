@@ -1,8 +1,8 @@
-# KYC Integration Guide for CryptoBazar
+# KYC Integration Guide for Rupee Link
 
 ## Overview
 
-This document outlines how to integrate advanced KYC (Know Your Customer) verification using third-party providers like **HyperVerge**, **IDfy**, and **Sumsub** into the CryptoBazar platform.
+This document outlines how to integrate advanced KYC (Know Your Customer) verification using third-party providers like **HyperVerge**, **IDfy**, and **Sumsub** into the Rupee Link platform.
 
 ---
 
@@ -64,7 +64,7 @@ export const startKYC = async (req, res) => {
 
     const response = await axios.post('https://api.hyperverge.co/v2/verifyKyc', {
       userId,
-      redirect_url: 'https://cryptobazar.com/kyc/callback',
+      redirect_url: 'https://cryptobaza.com/kyc/callback',
     }, {
       headers: {
         'Authorization': `Bearer ${process.env.HYPERVERGE_API_KEY}`
@@ -151,7 +151,7 @@ if (kyc?.status !== 'verified') {
 
 ## Conclusion
 
-Integrating a robust third-party KYC provider like HyperVerge or IDfy will significantly enhance security, compliance, and user trust in CryptoBazar. These providers offer real-time video verification, PEP screening, and liveness checks, and can be integrated via API with callback support.
+Integrating a robust third-party KYC provider like HyperVerge or IDfy will significantly enhance security, compliance, and user trust in Rupee Link. These providers offer real-time video verification, PEP screening, and liveness checks, and can be integrated via API with callback support.
 
 Would recommend HyperVerge for Indian P2P crypto platforms needing RBI-compliant video KYC.
 
